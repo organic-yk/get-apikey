@@ -57,10 +57,17 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 func submitHandler(w http.ResponseWriter, r *http.Request) {
 	enableCORS(w)
 
-	if r.Method == "OPTIONS" {
+	// 🔥 preflight 요청 완전 처리
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
 		return
 	}
-	
+
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "Error parsing form", http.StatusBadRequest)
 		return
@@ -69,9 +76,8 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 	pass := r.FormValue("passphrase")
 	serial := r.FormValue("serial")
 
-   apiKey, siteKey := MakeKey(pass, serial)
+	apiKey, siteKey := MakeKey(pass, serial)
 
-	// 🔥 JSON 응답으로 변경
 	response := map[string]string{
 		"apiKey":  apiKey,
 		"siteKey": siteKey,
@@ -80,6 +86,7 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
+
 /*
 func MakeKey(passphrase string, serialNumber string) ([]byte, []byte) {
 //	key.mutex.Lock()
