@@ -55,19 +55,24 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 
 // 제출 처리
 func submitHandler(w http.ResponseWriter, r *http.Request) {
-	enableCORS(w)
+	// 🔥 무조건 먼저 CORS 헤더 설정
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
 
-	// 🔥 preflight 요청 완전 처리
+	// 🔥 preflight 요청 처리 (핵심)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
 
+	// POST만 허용
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
+	// form 파싱
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "Error parsing form", http.StatusBadRequest)
 		return
@@ -86,7 +91,6 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
-
 /*
 func MakeKey(passphrase string, serialNumber string) ([]byte, []byte) {
 //	key.mutex.Lock()
