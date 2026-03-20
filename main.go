@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	
+	"encoding/json"
 	"crypto/sha256"
 	"encoding/base64"
 	"golang.org/x/crypto/pbkdf2"
@@ -55,6 +55,12 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 
 // 제출 처리
 func submitHandler(w http.ResponseWriter, r *http.Request) {
+	enableCORS(w)
+
+	if r.Method == "OPTIONS" {
+		return
+	}
+	
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "Error parsing form", http.StatusBadRequest)
 		return
@@ -63,17 +69,16 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 	pass := r.FormValue("passphrase")
 	serial := r.FormValue("serial")
 
-    pass2, serial2 := MakeKey(pass,serial);
+   apiKey, siteKey := MakeKey(pass, serial)
 
-	data := struct {
-		Pass   string
-		Serial string
-	}{
-		Pass:   pass2,
-		Serial: serial2,
+	// 🔥 JSON 응답으로 변경
+	response := map[string]string{
+		"apiKey":  apiKey,
+		"siteKey": siteKey,
 	}
 
-	resultTmpl.Execute(w, data)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }
 /*
 func MakeKey(passphrase string, serialNumber string) ([]byte, []byte) {
@@ -135,10 +140,20 @@ func MakeKey(passphrase string, serialNumber string) (string, string) {
 	return apiKeyBase64, fmt.Sprintf("%x", siteKey)
 }
 
+func enableCORS(w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+}
+
 func main() {
-	http.HandleFunc("/", formHandler)
 	http.HandleFunc("/submit", submitHandler)
 
-	fmt.Println("Server started at http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	fmt.Println("Server started at :" + port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
