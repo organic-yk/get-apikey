@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>API Key Generator</title>
+</head>
+
+<body>
+    <h2>API Key Generator</h2>
+
+    <label>Passphrase:</label><br>
+    <input type="password" id="pass"><br><br>
+
+    <label>Serial Number:</label><br>
+    <input type="text" id="serial"><br><br>
+
+    <button onclick="sendData()">Generate</button>
+
+    <h3 id="result"></h3>
+
+    <script>
+        async function sendData() {
+            const pass = document.getElementById("pass").value;
+            const serial = document.getElementById("serial").value;
+
+            // 👉 나중에 Go 서버 주소로 변경
+            const response = await fetch("https://your-server-url/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    passphrase: pass,
+                    serial: serial
+                })
+            });
+
+            const data = await response.json();
+            document.getElementById("result").innerText = data.apiKey;
+        }
+    </script>
+</body>
+
+</html>
