@@ -16,7 +16,7 @@
 
     <button onclick="sendData()">Submit</button>
 
-    <h3 id="result"></h3>
+
 
     <script>
         async function sendData() {
@@ -33,9 +33,14 @@
             });
 
             const data = await response.json();
-            document.getElementById("result").innerText = data.apiKey;
+            document.getElementById("apikey").innerText = data.apiKey;
+            document.getElementById("sitekey").innerText = data.siteKey;
         }
     </script>
+
+    <h2>Result</h2>
+    <p><b>APIKey:</b> <h3 id="apikey"></h3> </p>
+	<p><b>SITEKey:</b> <h3 id="sitekey"></h3> </p>
 </body>
 
 </html>
