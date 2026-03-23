@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: catsa-api-server
+    name: get_apikey
     runtime: go
     buildCommand: go build -o server .
     startCommand: ./server
