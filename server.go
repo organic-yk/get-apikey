@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"crypto/sha256"
 	"encoding/base64"
 	"golang.org/x/crypto/pbkdf2"
-	"os"
 )
 
 func main() {
@@ -20,14 +20,14 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	
-	// 서버 시작
-//	fmt.Printf("서버가 http://localhost:8080 에서 시작되었습니다.\n")
-//	fmt.Printf("다음 주소들을 방문하세요:\n")
-//	fmt.Printf("- http://localhost:8080 (입력 폼)\n")
-//	fmt.Printf("- http://localhost:8080/process?value1=10&value2=20 (값 처리)\n")
 
-	log.Fatal(http.ListenAndServe(port, nil))
+	// 서버 시작
+	fmt.Printf("서버가 http://localhost:%s 에서 시작되었습니다.\n", port)
+	fmt.Printf("다음 주소들을 방문하세요:\n")
+	fmt.Printf("- http://localhost:%s (입력 폼)\n", port)
+	fmt.Printf("- http://localhost:%s/process?value1=10&value2=20 (값 처리)\n", port)
+
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 // 메인 페이지 - HTML 폼 표시
@@ -176,6 +176,16 @@ func handleProcess(w http.ResponseWriter, r *http.Request) {
 
 	apiKey, siteKey := MakeKey(pass, serial)
 
+/*
+	response := map[string]string{
+		"apiKey":  apiKey,
+		"siteKey": siteKey,
+	}
+*/	
+	// 숫자 변환 시도 (선택사항)
+//	num1, err1 := strconv.ParseFloat(value1, 64)
+//	num2, err2 := strconv.ParseFloat(value2, 64)
+
 	// 응답 생성
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	html := `
@@ -276,6 +286,33 @@ func handleProcess(w http.ResponseWriter, r *http.Request) {
 				</div>
 			</div>
 	`
+
+	// 숫자 계산이 가능한 경우 추가 정보 표시
+	/*
+	if err1 == nil && err2 == nil {
+		sum := num1 + num2
+		diff := num1 - num2
+		product := num1 * num2
+		var quotient string
+		if num2 != 0 {
+			quotient = fmt.Sprintf("%.2f", num1/num2)
+		} else {
+			quotient = "불가능 (0으로 나눔)"
+		}
+
+		html += `
+			<div class="calculation">
+				<div class="label">수치 계산 결과:</div>
+				<div style="margin-top: 10px; line-height: 1.8;">
+					<div>합계: <strong>` + fmt.Sprintf("%.2f", sum) + `</strong></div>
+					<div>차이: <strong>` + fmt.Sprintf("%.2f", diff) + `</strong></div>
+					<div>곱하기: <strong>` + fmt.Sprintf("%.2f", product) + `</strong></div>
+					<div>나누기: <strong>` + quotient + `</strong></div>
+				</div>
+			</div>
+		`
+	}
+	*/
 
 	html += `
 			<a href="/" class="back-btn">Go to Home</a>
