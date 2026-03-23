@@ -280,10 +280,12 @@ func handleProcess(w http.ResponseWriter, r *http.Request) {
 					<div class="label">API Key:</div>
 					<div class="value">` + apiKey + `</div>
 				</div>
+				<!--
 				<div class="result-item">
 					<div class="label">Site Key:</div>
 					<div class="value">` + siteKey + `</div>
 				</div>
+				-->
 			</div>
 	`
 
