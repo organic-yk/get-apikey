@@ -1,4 +1,4 @@
-module catsa-api-key-server
+module get_apikey
 
 go 1.21
 
