@@ -157,7 +157,7 @@ func enableCORS(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
 }
-
+/*
 func main() {
 	http.HandleFunc("/submit", submitHandler)
 
@@ -169,3 +169,4 @@ func main() {
 	fmt.Println("Server started at :" + port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
+*/
