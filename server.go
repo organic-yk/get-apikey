@@ -22,10 +22,10 @@ func main() {
 	}
 	
 	// 서버 시작
-	fmt.Printf("서버가 http://localhost:8080 에서 시작되었습니다.\n")
-	fmt.Printf("다음 주소들을 방문하세요:\n")
-	fmt.Printf("- http://localhost:8080 (입력 폼)\n")
-	fmt.Printf("- http://localhost:8080/process?value1=10&value2=20 (값 처리)\n")
+//	fmt.Printf("서버가 http://localhost:8080 에서 시작되었습니다.\n")
+//	fmt.Printf("다음 주소들을 방문하세요:\n")
+//	fmt.Printf("- http://localhost:8080 (입력 폼)\n")
+//	fmt.Printf("- http://localhost:8080/process?value1=10&value2=20 (값 처리)\n")
 
 	log.Fatal(http.ListenAndServe(port, nil))
 }
