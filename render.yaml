@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: catsa-api-server
+    runtime: go
+    buildCommand: go build -o server .
+    startCommand: ./server
+    healthCheckPath: /
